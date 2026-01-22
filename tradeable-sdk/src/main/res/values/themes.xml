@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TradeableSDK" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+    
+    <style name="Theme.TradeableSDK.FullScreen" parent="Theme.TradeableSDK">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>

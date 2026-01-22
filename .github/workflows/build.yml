@@ -1,0 +1,117 @@
+name: Build Tradeable Android Wrapper
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      flutter_branch:
+        description: 'Flutter SDK branch to use'
+        required: false
+        default: 'main'
+
+env:
+  JAVA_VERSION: '17'
+  FLUTTER_VERSION: '3.24.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Android Wrapper
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        channel: 'stable'
+        cache: true
+        
+    - name: Verify Flutter installation
+      run: flutter doctor -v
+      
+    - name: Clone Flutter SDK
+      run: |
+        git clone --branch ${{ github.event.inputs.flutter_branch || 'main' }} \
+          https://github.com/Tradeable/tradeable_flutter_sdk.git \
+          .flutter_sdk
+          
+    - name: Get Flutter dependencies
+      working-directory: .flutter_sdk
+      run: flutter pub get
+      
+    - name: Build Flutter AAR
+      working-directory: .flutter_sdk
+      run: |
+        # Create module structure if needed
+        if [ ! -d ".android" ]; then
+          flutter create --template=module --org=com.tradeable .temp_module
+          mv .temp_module/.android .android
+          rm -rf .temp_module
+        fi
+        flutter build aar --no-debug --no-profile --build-number=${{ github.run_number }}
+        
+    - name: Copy Flutter AAR
+      run: |
+        mkdir -p tradeable-sdk/libs
+        cp -r .flutter_sdk/build/host/outputs/repo/* tradeable-sdk/libs/ || true
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build Android Wrapper AAR
+      run: ./gradlew assembleRelease
+      
+    - name: Prepare release artifacts
+      run: |
+        mkdir -p output
+        cp tradeable-sdk/build/outputs/aar/tradeable-sdk-release.aar output/tradeable-android-wrapper.aar
+        
+        # Create version info
+        echo "Tradeable Android Wrapper" > output/version.txt
+        echo "Build: ${{ github.run_number }}" >> output/version.txt
+        echo "Commit: ${{ github.sha }}" >> output/version.txt
+        echo "Flutter SDK Branch: ${{ github.event.inputs.flutter_branch || 'main' }}" >> output/version.txt
+        echo "Date: $(date -u)" >> output/version.txt
+        
+    - name: Upload AAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tradeable-android-wrapper
+        path: |
+          output/tradeable-android-wrapper.aar
+          output/version.txt
+        retention-days: 30
+        
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          output/tradeable-android-wrapper.aar
+          output/version.txt
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Optional: Run on self-hosted runner for faster builds
+  build-fast:
+    if: false  # Enable when self-hosted runner is available
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # ... similar steps as above

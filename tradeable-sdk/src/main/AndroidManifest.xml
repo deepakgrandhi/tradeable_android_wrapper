@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <application>
+        <!-- Flutter Activity for full-page views -->
+        <activity
+            android:name=".ui.TradeableFlutterActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.TradeableSDK"
+            android:windowSoftInputMode="adjustResize" />
+            
+        <!-- Content Provider for initialization -->
+        <provider
+            android:name=".core.TradeableInitProvider"
+            android:authorities="${applicationId}.tradeable-init"
+            android:exported="false"
+            android:initOrder="100" />
+    </application>
+
+</manifest>
