@@ -73,7 +73,7 @@ FLUTTER_SDK_BRANCH=develop ./build.sh
 
 ## Installation
 
-### Option 1: Local AAR
+### Local AAR
 
 1. Copy `tradeable-android-wrapper.aar` to your app's `libs` folder
 2. Add to your `build.gradle.kts`:
@@ -88,14 +88,6 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
-}
-```
-
-### Option 2: Maven Repository (Coming Soon)
-
-```kotlin
-dependencies {
-    implementation("com.tradeable:android-wrapper:1.0.0")
 }
 ```
 
