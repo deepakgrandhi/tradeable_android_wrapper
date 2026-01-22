@@ -15,7 +15,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         
         // Build config fields for Flutter SDK configuration
-        buildConfigField("String", "FLUTTER_SDK_REPO", "\"${findProperty("FLUTTER_SDK_REPO") ?: "https://github.com/Tradeable/tradeable_flutter_sdk.git"}\"")
+        buildConfigField("String", "FLUTTER_SDK_REPO", "\"${findProperty("FLUTTER_SDK_REPO") ?: "https://github.com/deepakgrandhi/tradeable_flutter_sdk_module.git"}\"")
         buildConfigField("String", "FLUTTER_SDK_BRANCH", "\"${findProperty("FLUTTER_SDK_BRANCH") ?: "main"}\"")
     }
 

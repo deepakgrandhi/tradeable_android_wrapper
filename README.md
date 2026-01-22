@@ -257,14 +257,14 @@ TradeableLearnSheet(
 
 ```bash
 # Clone this repository
-git clone https://github.com/Tradeable/tradeable-android-wrapper.git
+git clone https://github.com/deepakgrandhi/tradeable-android-wrapper.git
 cd tradeable-android-wrapper
 
 # Build with specific Flutter SDK branch
 FLUTTER_SDK_BRANCH=main ./build.sh
 
 # Or build with custom repository
-FLUTTER_SDK_REPO=https://github.com/your-fork/tradeable_flutter_sdk.git \
+FLUTTER_SDK_REPO=https://github.com/your-fork/tradeable_flutter_sdk_module.git \
 FLUTTER_SDK_BRANCH=develop \
 ./build.sh
 ```
@@ -332,4 +332,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/Tradeable/tradeable-android-wrapper/issues) page.
+For issues and feature requests, please use the [GitHub Issues](https://github.com/deepakgrandhi/tradeable-android-wrapper/issues) page.
